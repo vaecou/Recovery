@@ -1,0 +1,89 @@
+{
+	"easycom": {
+		"autoscan": true,
+		"custom": {
+			"^uv-(.*)": "@climblee/uv-ui/components/uv-$1/uv-$1.vue"
+		}
+	},
+	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+		{
+			"path": "pages/index",
+			"style": {
+				"navigationBarTitleText": "衣物回收"
+			}
+		},
+		{
+			"path": "pages/recyc",
+			"style": {
+				"navigationBarTitleText": "预约回收"
+			}
+		},
+		{
+			"path": "pages/address",
+			"style": {
+				"navigationBarTitleText": "地址列表"
+			}
+		},
+		{
+			"path": "pages/add_address",
+			"style": {
+				"navigationBarTitleText": "编辑地址"
+			}
+		},
+		{
+			"path": "pages/order",
+			"style": {
+				"navigationBarTitleText": "我的订单"
+			}
+		},
+		{
+			"path": "pages/personal",
+			"style": {
+				"navigationBarTitleText": "个人中心"
+			}
+		},
+		{
+			"path": "pages/balance",
+			"style": {
+				"navigationBarTitleText": "账户余额"
+			}
+		},
+		{
+			"path": "pages/about",
+			"style": {
+				"navigationBarTitleText": "关于我们"
+			}
+		},
+		{
+			"path": "pages/contact",
+			"style": {
+				"navigationBarTitleText": "联系客服"
+			}
+		}
+	],
+	"tabBar": {
+		"list": [
+			{
+				"pagePath": "pages/index",
+				"iconPath": "static/icon/shouye.png",
+				"selectedIconPath": "static/icon/shouye2.png"
+			},
+			{
+				"pagePath": "pages/order",
+				"iconPath": "static/icon/dingdan.png",
+				"selectedIconPath": "static/icon/dingdan2.png"
+			},
+			{
+				"pagePath": "pages/personal",
+				"iconPath": "static/icon/wode.png",
+				"selectedIconPath": "static/icon/wode2.png"
+			}
+		]
+	},
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "uni-app",
+		"navigationBarBackgroundColor": "#F8F8F8",
+		"backgroundColor": "#F8F8F8"
+	}
+}

@@ -1,6 +1,7 @@
 <script setup>
 import { reactive } from 'vue'
-
+import { appSetLogin } from '../main';
+appSetLogin()
 
 const state = reactive({
 	// 首页幻灯片

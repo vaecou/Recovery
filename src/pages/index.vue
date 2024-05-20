@@ -1,7 +1,6 @@
 <script setup>
-import { reactive } from 'vue'
-import { appSetLogin } from '../main';
-appSetLogin()
+import { ref, reactive } from 'vue'
+import api from '@/api/modules/home'
 
 const state = reactive({
 	// 首页幻灯片
@@ -12,7 +11,7 @@ const state = reactive({
 	],
 
 	//用户数量
-	userNumber: 156483,
+	userNumber: 0,
 
 	// 广播
 	broadcast: [
@@ -41,8 +40,14 @@ const state = reactive({
 	]
 })
 
-// 将用户数量转为数组
-const userNumberArr = state.userNumber.toString().split('')
+
+
+function getNum() {
+	api.num().then((res) => {
+		state.userNumber = res.data.data.num
+	})
+}
+
 
 // 跳转至预约回收页面
 function goRecyc() {
@@ -50,6 +55,14 @@ function goRecyc() {
 		url: "./recyc"
 	})
 }
+
+// 获取页面信息
+function getInfo() {
+	getNum()
+}
+
+
+getInfo()
 </script>
 
 <template>
@@ -66,7 +79,7 @@ function goRecyc() {
 				<view class="recycUser">
 					累计回收
 					<view class="numberItemContent">
-						<view class="squareNumb" v-for="item in userNumberArr">
+						<view class="squareNumb" v-for="item in state.userNumber.toString().split('')">
 							{{ item }}
 						</view>
 					</view>

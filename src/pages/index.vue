@@ -1,6 +1,7 @@
 <script setup>
 import { ref, reactive } from 'vue'
 import api from '@/api/modules/home'
+import api2 from '@/api/modules/question'
 
 const state = reactive({
 	// 首页幻灯片
@@ -24,29 +25,8 @@ const state = reactive({
 	],
 
 	// 问题
-	problem: [
-		{
-			title: '哪些衣服可以回收？',
-			text: '我们对旧衣新旧程度、大小、薄厚没有过多的要求(衣物尽量整洁干净就好啦~)春夏衣、秋冬衣、鞋子、包包、童装、帽子、手套、袜子、背包、床单、被罩、毛绒玩具均可回收。'
-		},
-		{
-			title: '回收的衣服怎么处理？',
-			text: '在分拣工厂里，根据衣服的新旧程度，决定是否环保再生，还有部分会出口到三方国家。'
-		},
-		{
-			title: '回收需要付运费吗？',
-			text: '回收旧衣不需要支付运费，运费用由我们承担。若遇到快递小哥收运费，告知平台走的是“月结”账户即可。'
-		}
-	]
+	problem: []
 })
-
-
-
-function getNum() {
-	api.num().then((res) => {
-		state.userNumber = res.data.data.num
-	})
-}
 
 
 // 跳转至预约回收页面
@@ -56,9 +36,21 @@ function goRecyc() {
 	})
 }
 
+function getNum() {
+	api.num().then((res) => {
+		state.userNumber = res.data.data.num
+	})
+}
+function getQuestion() {
+	api2.question().then((res) => {
+		state.problem = res.data.data
+	})
+}
+
 // 获取页面信息
 function getInfo() {
 	getNum()
+	getQuestion()
 }
 
 
@@ -112,7 +104,7 @@ getInfo()
 								{{ item.title }}
 							</view>
 							<view class="problemA">
-								{{ item.text }}
+								{{ item.content }}
 							</view>
 						</view>
 					</uv-list-item>

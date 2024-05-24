@@ -38,12 +38,12 @@ function goRecyc() {
 
 function getNum() {
 	api.num().then((res) => {
-		state.userNumber = res.data.data.num
+		state.userNumber = res.data.num
 	})
 }
 function getQuestion() {
 	api2.question().then((res) => {
-		state.problem = res.data.data
+		state.problem = res.data
 	})
 }
 

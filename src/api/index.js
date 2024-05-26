@@ -39,7 +39,6 @@ api.interceptors.response.use(
 				uni.showToast({
 					title: response.data.message,
 					icon: 'none',
-					duration: 3000
 				});
 				return Promise.reject(response.data)
 			} else {
@@ -95,7 +94,6 @@ api.interceptors.response.use(
 		uni.showToast({
 			icon: 'none',
 			title: message,
-			duration: 3000
 		});
 		return Promise.reject(error)
 	},

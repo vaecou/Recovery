@@ -25,6 +25,11 @@ const kgArr = ref([
 	{ label: '50KG以上', tips: '约100件以上', disabled: false },
 ])
 
+const tips = ref({
+	title: '请选择取件地址',
+	content: '',
+})
+
 // 更新日期光标
 function selectDay(index, day) {
 	if (!futureDays.value[index].disabled) {
@@ -61,7 +66,14 @@ function confirm() {
 // 点击取件地址
 function handleAddress() {
 	uni.navigateTo({
-		url: "./address"
+		url: "./address",
+		events: {
+			acceptDataFormDetail(data) {
+				console.log(data.data)
+				tips.value.title = data.data.name + " " + data.data.phone
+				tips.value.content = data.data.provinces + data.data.citys + data.data.areas + data.data.detail
+			}
+		}
 	})
 }
 
@@ -232,8 +244,13 @@ changeDay(today.getDate())
 				<uv-icon name="arrow-right"></uv-icon>
 			</view>
 			<view class="recoveryInfo" @click="handleAddress">
-				<view class="recoveryInfoTitle">
-					请选择取件地址
+				<view class="recoveryInfoData">
+					<view class="recoveryInfoTitle">
+						{{ tips.title }}
+					</view>
+					<view class="recoveryInfoContent">
+						{{ tips.content }}
+					</view>
 				</view>
 				<uv-icon name="arrow-right"></uv-icon>
 			</view>
@@ -592,6 +609,12 @@ changeDay(today.getDate())
 
 		.recoveryInfoTitle {
 			font-weight: 600;
+		}
+
+		.recoveryInfoData {
+			.recoveryInfoContent {
+				font-size: 12px;
+			}
 		}
 	}
 }

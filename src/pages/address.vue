@@ -1,20 +1,22 @@
 <script setup>
-import { reactive } from 'vue'
+import { ref, getCurrentInstance } from 'vue'
+import api from '@/api/modules/regions'
 
-const state = reactive({
-	address: [
-		// {
-		// 	name: '张三',
-		// 	phone: '12345678901',
-		// 	province: '广东省',
-		// 	city: '广州市',
-		// 	county: '天河区',
-		// 	address: '天河区天河公园',
-		// 	isDefault: true
-		// },
-	]
+const $instance = ref(getCurrentInstance().proxy)
+
+const state = ref({
+	address: [],
+	radiovalue: 0
 })
 
+
+function getAddressList() {
+	api.address_list().then((res) => {
+		state.value.address = res.data.list
+		state.value.radiovalue = res.data.radio
+	})
+}
+getAddressList()
 
 // 点击添加回收地址
 function handleAddAddress() {
@@ -27,28 +29,75 @@ function handleAddAddress() {
 function getWechatAddress() {
 	uni.chooseAddress({
 		success(res) {
-			console.log(res.userName)
-			console.log(res.postalCode)
-			console.log(res.provinceName)
-			console.log(res.cityName)
-			console.log(res.countyName)
-			console.log(res.detailInfo)
-			console.log(res.nationalCode)
-			console.log(res.telNumber)
+			let form = ref({
+				name: res.userName,
+				phone: res.telNumber,
+				provinces: res.provinceName,
+				citys: res.cityName,
+				areas: res.countyName,
+				detail: res.detailInfo,
+				default: false
+			})
+
+			api.create(form.value).then(() => {
+				uni.navigateBack()
+				uni.showToast({
+					title: "保存成功",
+					icon: 'none',
+				});
+			})
 		}
 	})
 }
+
+function changeRadio(props) {
+	api.update_radio({
+		"id": props
+	}).then(() => {
+		setTimeout(() => {
+			getAddressList()
+		}, 500)
+	})
+}
+
+function deleteAddress(props) {
+	api.delete_address({
+		"id": props
+	}).then(() => {
+		setTimeout(() => {
+			getAddressList()
+		}, 500)
+	})
+}
+
+function updateAddress(props) {
+	uni.navigateTo({
+		url: "./add_address?id=" + props
+	})
+}
+
+function apply(data) {
+	uni.navigateBack()
+	//跳转成功以后传递一个事件
+	const eventChannel = $instance.value.getOpenerEventChannel();
+	eventChannel.emit('acceptDataFormDetail', {
+		data: data
+	})
+}
+
+// setup模式下导出状态和函数
+defineExpose({
+	getAddressList
+});
 </script>
 
 <template>
 	<scroll-view>
-
-		<view v-if="state.address.length === 0" class="emptyData">
+		<view v-if="state.address === null || state.address.length === 0" class="emptyData">
 			<uv-empty icon="https://cdn.uviewui.com/uview/empty/data.png" text="您没有添加过回收地址"></uv-empty>
 		</view>
-
-		<view v-else class="address-item" v-for="(item, index) in state.address" :key="index">
-			<view class="title">
+		<view v-else class="address-item" v-for="item in state.address" :key="item.id">
+			<view class="title" @click="apply(item)">
 				<view class="info">
 					<view class="name">{{ item.name }}</view>
 					<view class="phone">{{ item.phone }}</view>
@@ -57,16 +106,18 @@ function getWechatAddress() {
 					使用
 				</view>
 			</view>
-			<view class="address">
-				{{ item.province }}{{ item.city }}{{ item.county }}{{ item.address }}
+			<view class="address" @click="updateAddress(item.id)">
+				{{ item.provinces }}{{ item.citys }}{{ item.areas }}{{ item.detail }}
 				<uv-icon name="edit-pen"></uv-icon>
 			</view>
 			<view class="default">
-				<uv-radio-group customStyle="flex: unset;">
-					<uv-radio activeColor="#0ec4b9">默认地址</uv-radio>
+				<uv-radio-group v-model="state.radiovalue" customStyle="flex: unset;">
+					<uv-radio :key="item.id" :name="item.id" @change="changeRadio" activeColor="#0ec4b9">默认地址</uv-radio>
 				</uv-radio-group>
 				<view class="split"></view>
-				删除地址
+				<view @click="deleteAddress(item.id)">
+					删除地址
+				</view>
 			</view>
 		</view>
 		<view class="empty"></view>

@@ -65,6 +65,12 @@
 			"style": {
 				"navigationBarTitleText": "联系客服"
 			}
+		},
+		{
+			"path": "pages/protocol",
+			"style": {
+				"navigationBarTitleText": "回收协议"
+			}
 		}
 	],
 	"tabBar": {

@@ -24,6 +24,12 @@ function contact() {
 		url: "./contact"
 	})
 }
+
+function protocol() {
+	uni.navigateTo({
+		url: "./protocol"
+	})
+}
 </script>
 
 <template>
@@ -109,6 +115,13 @@ function contact() {
 				<view class="image two"></view>
 				<view class="text">
 					联系客服
+					<uv-icon name="arrow-right"></uv-icon>
+				</view>
+			</view>
+			<view class="list" @click="protocol">
+				<view class="image two"></view>
+				<view class="text">
+					回收协议
 					<uv-icon name="arrow-right"></uv-icon>
 				</view>
 			</view>

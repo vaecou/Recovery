@@ -60,9 +60,9 @@ getInfo()
 <template>
 	<scroll-view>
 		<!-- Banner图 -->
-		<view class="banner">
+		<!-- <view class="banner">
 			<uv-swiper :list="state.banner" indicator indicatorMode="line" interval="4000" circular></uv-swiper>
-		</view>
+		</view> -->
 
 		<!-- 回收指南 -->
 		<view class="recycItem">

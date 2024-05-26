@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from 'vue'
+import api from '@/api/modules/regions'
 
 const categoryModal = ref()	// 初始化不回收品类弹窗状态
 const recoveryModal = ref()	// 初始化不回收地区弹窗状态
@@ -69,7 +70,6 @@ function handleAddress() {
 		url: "./address",
 		events: {
 			acceptDataFormDetail(data) {
-				console.log(data.data)
 				tips.value.title = data.data.name + " " + data.data.phone
 				tips.value.content = data.data.provinces + data.data.citys + data.data.areas + data.data.detail
 			}
@@ -111,7 +111,7 @@ function changeDay(e) {
 			} else {
 				var startTime = 7 + i * 2;
 				var endTime = startTime + 2;
-				var timeLabel = `${startTime}:00-${endTime}:00`;
+				var timeLabel = `${startTime.toString().padStart(2, '0')}:00-${endTime}:00`;
 
 				futureTimes.value.push({
 					label: timeLabel,
@@ -134,7 +134,7 @@ function changeDay(e) {
 			} else {
 				var startTime = 7 + i * 2;
 				var endTime = startTime + 2;
-				var timeLabel = `${startTime}:00-${endTime}:00`;
+				var timeLabel = `${startTime.toString().padStart(2, '0')}:00-${endTime}:00`;
 
 				futureTimes.value.push({
 					label: timeLabel,
@@ -157,6 +157,40 @@ function changeDay(e) {
 		}
 	}
 }
+
+function protocol() {
+	uni.navigateTo({
+		url: "./protocol"
+	})
+}
+
+function submit() {
+	if (timeTips.value == '请预约上门时间') {
+		uni.showToast({
+			title: '请选择上门时间',
+			icon: 'none'
+		})
+		return
+	}
+	if (tips.value.title == '请选择取件地址') {
+		uni.showToast({
+			title: '请选择取件地址',
+			icon: 'none'
+		})
+		return
+	}
+	reservationModal.value.open()
+}
+
+function getRadio() {
+	api.get_radio().then(res => {
+		if (res.data != null) {
+			tips.value.title = res.data.name + " " + res.data.phone
+			tips.value.content = res.data.provinces + res.data.citys + res.data.areas + res.data.detail
+		}
+	})
+}
+getRadio()
 
 changeDay(today.getDate())
 </script>
@@ -279,7 +313,7 @@ changeDay(today.getDate())
 		<view class="empty"></view>
 
 		<view class="submitLine">
-			<view class="submit" @click="reservationModal.open()">
+			<view class="submit" @click="submit">
 				提交预约
 			</view>
 		</view>
@@ -494,6 +528,23 @@ changeDay(today.getDate())
 									</view>
 									<view class="reservationItemTxt">
 										请仔细检查回收物品中，是否遗漏贵重或重要物品，以免给您带来损失。
+									</view>
+								</view>
+							</view>
+							<view class="reservationItem">
+								<view class="img">
+									<uv-image src="https://www.yueguangling.top/uploads/image/reservation/queding.png"
+										height="42px" width="42px"></uv-image>
+								</view>
+								<view class="reservationItemContent">
+									<view class="reservationItemTitle">
+										回收协议
+									</view>
+									<view class="reservationItemTxt">
+										点击下方已阅读并确定按钮将默认为同意此协议：
+										<view class="click" @click="protocol">
+											点击查看
+										</view>
 									</view>
 								</view>
 							</view>

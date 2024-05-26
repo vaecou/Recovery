@@ -14,4 +14,6 @@ export default {
 	address: (data) => api.get('mini/address', data),
 
 	update_address: (data) => api.put('mini/address', data),
+
+	get_radio: () => api.get('mini/address/radio'),
 }

@@ -13,7 +13,9 @@ const state = ref({
 function getAddressList() {
 	api.address_list().then((res) => {
 		state.value.address = res.data.list
-		state.value.radiovalue = res.data.radio
+		if (res.data.radio != null) {
+			state.value.radiovalue = res.data.radio.id
+		}
 	})
 }
 getAddressList()

@@ -75,7 +75,7 @@ getInfo()
 							{{ item }}
 						</view>
 					</view>
-					人
+					次
 				</view>
 			</view>
 

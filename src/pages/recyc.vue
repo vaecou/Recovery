@@ -1,6 +1,8 @@
 <script setup>
 import { ref } from 'vue'
 import api from '@/api/modules/regions'
+import api2 from '@/api/modules/user'
+import api3 from '@/api/modules/order'
 
 const categoryModal = ref()	// 初始化不回收品类弹窗状态
 const recoveryModal = ref()	// 初始化不回收地区弹窗状态
@@ -13,6 +15,8 @@ const futureTimes = ref([]) // 时间段数组
 const today = new Date()
 const selectedDayIndex = ref(0)
 const selectedTimeIndex = ref(0)
+
+const isphone = ref(false)
 
 const timeTips = ref('请预约上门时间')
 
@@ -29,6 +33,20 @@ const kgArr = ref([
 const tips = ref({
 	title: '请选择取件地址',
 	content: '',
+})
+
+const form = ref({
+	name: '',
+	phone: '',
+	provinces: '',
+	citys: '',
+	areas: '',
+	detail: '',
+	day: '',
+	week: '',
+	time: '',
+	type: '',
+	estimate: ''
 })
 
 // 更新日期光标
@@ -58,10 +76,16 @@ function selectKg(index) {
 
 // 点击确定选择的按钮
 function confirm() {
+	form.value.day = futureDays.value[selectedDayIndex.value].formattedDate
+	form.value.week = futureDays.value[selectedDayIndex.value].dayOfWeek
+	form.value.time = futureTimes.value[selectedTimeIndex.value].label
+	form.value.type = 1
+	form.value.estimate = kgArr.value[selectedKgIndex.value].label
 	// 修改时间文字
 	timeTips.value = `${futureDays.value[selectedDayIndex.value].formattedDate}（${futureDays.value[selectedDayIndex.value].dayOfWeek}） ${futureTimes.value[selectedTimeIndex.value].label}`
 	// 关闭弹窗
 	timeModal.value.close()
+	console.log(form.value)
 }
 
 // 点击取件地址
@@ -70,6 +94,12 @@ function handleAddress() {
 		url: "./address",
 		events: {
 			acceptDataFormDetail(data) {
+				form.value.name = data.data.name
+				form.value.phone = data.data.phone
+				form.value.provinces = data.data.provinces
+				form.value.citys = data.data.citys
+				form.value.areas = data.data.areas
+				form.value.detail = data.data.detail
 				tips.value.title = data.data.name + " " + data.data.phone
 				tips.value.content = data.data.provinces + data.data.citys + data.data.areas + data.data.detail
 			}
@@ -185,12 +215,54 @@ function submit() {
 function getRadio() {
 	api.get_radio().then(res => {
 		if (res.data != null) {
+			form.value.name = res.data.name
+			form.value.phone = res.data.phone
+			form.value.provinces = res.data.provinces
+			form.value.citys = res.data.citys
+			form.value.areas = res.data.areas
+			form.value.detail = res.data.detail
 			tips.value.title = res.data.name + " " + res.data.phone
 			tips.value.content = res.data.provinces + res.data.citys + res.data.areas + res.data.detail
 		}
 	})
 }
 getRadio()
+
+function getPhone() {
+	api2.get_user_phone().then(res => {
+		if (res.data != null) {
+			isphone.value = res.data.result
+		}
+	})
+}
+getPhone()
+
+function getPhoneCode(e) {
+	api2.save_user_phone({
+		"code": e.code
+	}).then(() => {
+		submitOrder()
+	})
+}
+
+function submitOrder() {
+	reservationModal.value.close()
+	api3.add_order(form.value).then(() => {
+		uni.switchTab({
+			url: "./order",
+			success: () => {
+				let page = getCurrentPages().pop();
+				page.$vm.clean();
+				page.$vm.getData();
+
+				uni.showToast({
+					title: '预约成功',
+					icon: 'none'
+				})
+			}
+		})
+	})
+}
 
 changeDay(today.getDate())
 </script>
@@ -552,7 +624,9 @@ changeDay(today.getDate())
 					</view>
 				</slot>
 				<template v-slot:confirmButton>
-					<uv-button @click="reservationModal.close()"
+					<uv-button v-if="isphone" @click="submitOrder"
+						custom-style="font-size:18px; margin: 0 auto 12px;background: #0ec4b9;border-radius: 10px;color: #fff;font-weight: 700;height: 45px;">已阅读并确定</uv-button>
+					<uv-button v-else open-type="getPhoneNumber" @getphonenumber="getPhoneCode"
 						custom-style="font-size:18px; margin: 0 auto 12px;background: #0ec4b9;border-radius: 10px;color: #fff;font-weight: 700;height: 45px;">已阅读并确定</uv-button>
 				</template>
 			</uv-modal>

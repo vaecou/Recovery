@@ -241,6 +241,7 @@ function getPhoneCode(e) {
 	api2.save_user_phone({
 		"code": e.code
 	}).then(() => {
+		getPhone()
 		submitOrder()
 	})
 }

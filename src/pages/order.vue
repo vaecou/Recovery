@@ -108,7 +108,7 @@ function getData() {
 	api.get_order_list({
 		"type": form.value.type,
 		"page": form.value.page,
-		"limit": 10
+		"limit": 30
 	}).then(res => {
 		if (res.data !== null && form.value.status !== 'nomore') {
 			res.data.forEach(element => {

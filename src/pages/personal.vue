@@ -1,6 +1,16 @@
 <script setup>
 import { ref } from 'vue'
+import api from '@/api/modules/personal'
+
 const tipsModal = ref()	// 初始化不回收品类弹窗状态
+
+const data = ref({
+	kg: 0.00,
+	balance: 0.00,
+	one: 0.00,
+	two: 0.00,
+	three: 0.00
+})
 
 function order() {
 	uni.switchTab({
@@ -30,6 +40,17 @@ function protocol() {
 		url: "./protocol"
 	})
 }
+
+function getInfo() {
+	api.get_info().then(res => {
+		data.value.kg = res.data.kg
+		data.value.balance = res.data.balance
+		data.value.one = res.data.one
+		data.value.two = res.data.two
+		data.value.three = res.data.three
+	})
+}
+getInfo()
 </script>
 
 <template>
@@ -39,7 +60,7 @@ function protocol() {
 				累计回收
 			</view>
 			<view class="content">
-				0KG
+				{{ data.kg }}KG
 			</view>
 		</view>
 		<view class="miniCard" @click="balance">
@@ -47,7 +68,7 @@ function protocol() {
 				账户余额
 			</view>
 			<view class="content">
-				0元
+				{{ data.balance }}元
 			</view>
 		</view>
 	</view>
@@ -70,7 +91,7 @@ function protocol() {
 						绿化面积
 					</view>
 					<view class="num">
-						0.00m²
+						{{ data.one }}m²
 					</view>
 				</view>
 			</view>
@@ -81,7 +102,7 @@ function protocol() {
 						减碳量
 					</view>
 					<view class="num">
-						0.00kg
+						{{ data.two }}kg
 					</view>
 				</view>
 			</view>
@@ -92,7 +113,7 @@ function protocol() {
 						节省石油
 					</view>
 					<view class="num">
-						0.00kg
+						{{ data.three }}kg
 					</view>
 				</view>
 			</view>
